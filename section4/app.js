@@ -1,5 +1,5 @@
-require('babel-register')
+require("babel-register");
 
-const v1 = 1
-
-console.log(v1)
+(function () {
+  console.log("test");
+})();
