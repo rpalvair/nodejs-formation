@@ -1,7 +1,8 @@
 require('babel-register')
 
+var v1
 if(false) {
-    var v1 = 1
+    v1 = 1
     let v2 = 2
 }
 
