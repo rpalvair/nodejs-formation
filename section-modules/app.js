@@ -1,3 +1,5 @@
-const mod1 = require('./module1')
+const mod1 = require("./module1");
 
-mod1.sayHello()
+mod1.sayHello();
+
+mod1.sayHi();
