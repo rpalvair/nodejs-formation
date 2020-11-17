@@ -6,12 +6,12 @@ http.createServer((req, res) => {
         res.writeHead(200, {
             'Content-type': 'text/html'
         })
-        res.write("Accueil\n")
+        res.write("<h1>Accueil</h1>\n")
     } else {
         res.writeHead(404, {
             'Content-type': 'text/html'
         })
-        res.write("Erreur 404")
+        res.write("<span style='color:red'>Erreur 404</span>")
     }
     res.end()
 }).listen(8080);
