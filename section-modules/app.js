@@ -1,3 +1,4 @@
-require('os')
-require('fs')
-require('http')
+const os = require('os')
+
+console.log(os.arch())
+console.log(os.homedir())
