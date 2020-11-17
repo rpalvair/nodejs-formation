@@ -1,7 +1,11 @@
 const http = require("http");
 
 http.createServer((req, res) => {
-    res.write("Hello\n")
-    res.write(req.url)
+
+    if(req.url == '/') {
+        res.write("Accueil\n")
+    } else {
+        res.write("Erreur 404")
+    }
     res.end()
 }).listen(8080);
