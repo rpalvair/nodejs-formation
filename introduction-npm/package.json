@@ -11,5 +11,8 @@
   "license": "ISC",
   "dependencies": {
     "babel-register": "^6.26.0"
+  },
+  "devDependencies": {
+    "ms": "^2.1.3"
   }
 }
