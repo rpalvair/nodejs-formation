@@ -3,6 +3,7 @@ const { success, error } = require("./functions")
 const express = require("express")
 const morgan = require("morgan")
 const app = express()
+const config = require("./config.json")
 
 app.use(morgan("dev"))
 app.use(express.json())
@@ -23,64 +24,65 @@ const members = [
   },
 ]
 
-const basePath = "/api/v1/members"
+const basePath = config.rootAPI + "members"
 
 let router = express.Router()
 
-router.route("/:id")
-.get((req, res) => {
-  let index = getIndex(req.params.id)
-  if (index >= 0) {
-    res.send(success(members[index]))
-  } else {
-    res.json(error(index))
-  }
-})
-.put((req, res) => {
-  let index = getIndex(req.params.id)
-  if (index >= 0) {
-    if (!existMemberWithSameName(req.body.name, req.params.id)) {
-      members[index].name = req.body.name
-      res.json(success(members[index]))
+router
+  .route("/:id")
+  .get((req, res) => {
+    let index = getIndex(req.params.id)
+    if (index >= 0) {
+      res.send(success(members[index]))
     } else {
-      res.json(error("Same name"))
+      res.json(error(index))
     }
-  } else {
-    res.json(error(index))
-  }
-})
-.delete((req, res) => {
-  let index = getIndex(req.params.id)
-  if (index >= 0) {
-    members.splice(index, 1)
-    res.json(success(members))
-  } else {
-    res.json(error(index))
-  }
-})
+  })
+  .put((req, res) => {
+    let index = getIndex(req.params.id)
+    if (index >= 0) {
+      if (!existMemberWithSameName(req.body.name, req.params.id)) {
+        members[index].name = req.body.name
+        res.json(success(members[index]))
+      } else {
+        res.json(error("Same name"))
+      }
+    } else {
+      res.json(error(index))
+    }
+  })
+  .delete((req, res) => {
+    let index = getIndex(req.params.id)
+    if (index >= 0) {
+      members.splice(index, 1)
+      res.json(success(members))
+    } else {
+      res.json(error(index))
+    }
+  })
 
-router.route("/")
-.post((req, res) => {
-  const name = req.body.name
-  if (name && nameAlreadyUsed(name)) {
-    res.json(error("Name already taken"))
-  } else if (name) {
-    let member = addMember(name)
-    res.json(success(member))
-  } else {
-    res.json(error("No name value"))
-  }
-})
-.get((req, res) => {
-  if (req.query.max != undefined && req.query.max > 0) {
-    res.json(success(members.slice(0, req.query.max)))
-  } else if (req.query.max != undefined) {
-    res.json(error("Wrong max value!"))
-  } else {
-    res.json(success(members))
-  }
-})
-
+router
+  .route("/")
+  .post((req, res) => {
+    const name = req.body.name
+    if (name && nameAlreadyUsed(name)) {
+      res.json(error("Name already taken"))
+    } else if (name) {
+      let member = addMember(name)
+      res.json(success(member))
+    } else {
+      res.json(error("No name value"))
+    }
+  })
+  .get((req, res) => {
+    if (req.query.max != undefined && req.query.max > 0) {
+      res.json(success(members.slice(0, req.query.max)))
+    } else if (req.query.max != undefined) {
+      res.json(error("Wrong max value!"))
+    } else {
+      res.json(success(members))
+    }
+  })
 
 function addMember(name) {
   let member = {
@@ -115,9 +117,9 @@ function existMemberWithSameName(name, id) {
 }
 
 function createID() {
-  return members[members.length -1].id + 1
+  return members[members.length - 1].id + 1
 }
 
 app.use(basePath, router)
 
-app.listen(8080, () => console.log("Started on port 8080"))
+app.listen(config.port, () => console.log(`Started on port ${config.port}`))
