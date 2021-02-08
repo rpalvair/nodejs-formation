@@ -23,7 +23,9 @@ const members = [
   },
 ]
 
-app.get("/api/v1/members/:id", (req, res) => {
+const basePath = "/api/v1/members"
+
+app.get(basePath + "/:id", (req, res) => {
   let index = getIndex(req.params.id)
   if (index >= 0) {
     res.send(success(members[index]))
@@ -32,7 +34,7 @@ app.get("/api/v1/members/:id", (req, res) => {
   }
 })
 
-app.get("/api/v1/members", (req, res) => {
+app.get(basePath, (req, res) => {
   if (req.query.max != undefined && req.query.max > 0) {
     res.json(success(members.slice(0, req.query.max)))
   } else if (req.query.max != undefined) {
@@ -42,15 +44,29 @@ app.get("/api/v1/members", (req, res) => {
   }
 })
 
-app.post("/api/v1/members", (req, res) => {
+app.post(basePath, (req, res) => {
   const name = req.body.name
-  if (name && alreadyExist(name)) {
+  if (name && nameAlreadyUsed(name)) {
     res.json(error("Name already taken"))
   } else if (name) {
     let member = addMember(name)
     res.json(success(member))
   } else {
     res.json(error("No name value"))
+  }
+})
+
+app.put(basePath + "/:id", (req, res) => {
+  let index = getIndex(req.params.id)
+  if (index >= 0) {
+    if (!existMemberWithSameName(req.body.name, req.params.id)) {
+      members[index].name = req.body.name
+      res.json(success(members[index]))
+    } else {
+      res.json(error("Same name"))
+    }
+  } else {
+    res.json(error(index))
   }
 })
 
@@ -63,7 +79,7 @@ function addMember(name) {
   return member
 }
 
-function alreadyExist(name) {
+function nameAlreadyUsed(name) {
   for (let i = 0; i < members.length; i++) {
     if (members[i].name === name) return true
   }
@@ -75,6 +91,15 @@ function getIndex(id) {
     if (members[i].id == id) return i
   }
   return "Wrong id"
+}
+function existMemberWithSameName(name, id) {
+  let same = false
+  for (let i = 0; i < members.length && !same; i++) {
+    if (members[i].name == name && members[i].id != id) {
+      same = true
+    }
+  }
+  return same
 }
 
 app.listen(8080, () => console.log("Started on port 8080"))
