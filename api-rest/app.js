@@ -82,7 +82,7 @@ app.delete(basePath + "/:id", (req, res) => {
 
 function addMember(name) {
   let member = {
-    id: members.length + 1,
+    id: createID(),
     name: name,
   }
   members.push(member)
@@ -110,6 +110,10 @@ function existMemberWithSameName(name, id) {
     }
   }
   return same
+}
+
+function createID() {
+  return members[members.length -1].id + 1
 }
 
 app.listen(8080, () => console.log("Started on port 8080"))
