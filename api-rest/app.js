@@ -21,15 +21,31 @@ const members = [
 ];
 
 app.get("/api/v1/members/:id", (req, res) => {
-  res.send(members[req.params.id - 1]);
+  res.send(success(members[req.params.id - 1]));
 });
 
 app.get("/api/v1/members", (req, res) => {
   if (req.query.max != undefined && req.query.max > 0) {
-    res.json(members.slice(0, req.query.max));
+    res.json(success(members.slice(0, req.query.max)));
+  } else if (req.query.max != undefined) {
+    res.json(error("Wrong max value!"));
   } else {
-    res.json(members);
+    res.json(success(members));
   }
 });
 
 app.listen(8080, () => console.log("Started on port 8080"));
+
+function success(result) {
+  return {
+    status: "success",
+    result: result,
+  };
+}
+
+function error(message) {
+  return {
+    status: "error",
+    message: message,
+  };
+}
