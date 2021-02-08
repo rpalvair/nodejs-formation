@@ -1,10 +1,12 @@
-require("babel-register");
-const func = require("./functions");
-const express = require("express");
-const morgan = require("morgan");
-const app = express();
+require("babel-register")
+const func = require("./functions")
+const express = require("express")
+const morgan = require("morgan")
+const app = express()
 
-app.use(morgan("dev"));
+app.use(morgan("dev"))
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 
 const members = [
   {
@@ -19,20 +21,24 @@ const members = [
     id: 3,
     name: "Jack",
   },
-];
+]
 
 app.get("/api/v1/members/:id", (req, res) => {
-  res.send(func.success(members[req.params.id - 1]));
-});
+  res.send(func.success(members[req.params.id - 1]))
+})
 
 app.get("/api/v1/members", (req, res) => {
   if (req.query.max != undefined && req.query.max > 0) {
-    res.json(func.success(members.slice(0, req.query.max)));
+    res.json(func.success(members.slice(0, req.query.max)))
   } else if (req.query.max != undefined) {
-    res.json(func.error("Wrong max value!"));
+    res.json(func.error("Wrong max value!"))
   } else {
-    res.json(func.success(members));
+    res.json(func.success(members))
   }
-});
+})
 
-app.listen(8080, () => console.log("Started on port 8080"));
+app.post("/api/v1/members", (req, res) => {
+  res.send(req.body)
+})
+
+app.listen(8080, () => console.log("Started on port 8080"))
