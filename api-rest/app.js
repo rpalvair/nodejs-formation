@@ -21,12 +21,15 @@ const members = [
 ];
 
 app.get("/api/v1/members/:id", (req, res) => {
-  res.send(members[req.params.id - 1])
-})
+  res.send(members[req.params.id - 1]);
+});
 
 app.get("/api/v1/members", (req, res) => {
-  res.send(members)
-})
-
+  if (req.query.max != undefined && req.query.max > 0) {
+    res.send(members.slice(0, req.query.max));
+  } else {
+    res.send(members);
+  }
+});
 
 app.listen(8080, () => console.log("Started on port 8080"));
