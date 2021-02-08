@@ -1,23 +1,14 @@
 require("babel-register")
 
-const { getMemberWithPromise, getArticlesWithPromise } = require("./promise")
+const { runWithAsync } = require("./run-with-async-wait")
+const { runWithPromiseAll } = require("./run-with-promise-all")
+const { runWithPromiseRace } = require("./run-with-promise-race")
+const { runWithPromise } = require("./run-with-promise")
 
 console.log("Debut")
-
-Promise.all([getMemberWithPromise(), getArticlesWithPromise()]).then((value) =>
-  console.log(value)
-)
-
-Promise.race([getMemberWithPromise(), getArticlesWithPromise()]).then((value) =>
-  console.log(value)
-)
-
-// getMemberWithPromise()
-//   .then((value) => {
-//     console.log(value)
-//     return getArticlesWithPromise()
-//   })
-//   .then((value) => console.log(value))
-//   .catch((error) => console.error(error))
+runWithAsync()
+runWithPromiseAll()
+runWithPromiseRace()
+runWithPromise()
 
 console.log("Fin")
