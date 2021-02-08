@@ -1,12 +1,9 @@
-require("babel-register");
+require("babel-register")
+const express = require("express")
+const morgan = require('morgan')
+const app = express()
 
-const express = require("express");
-const app = express();
-
-app.use((req, res, next) => {
-  console.log("URL : " + req.url);
-  next();
-});
+app.use(morgan('dev'));
 
 app.get("/api", (req, res) => {
   res.send("Root API");
