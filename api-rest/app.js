@@ -38,7 +38,32 @@ app.get("/api/v1/members", (req, res) => {
 })
 
 app.post("/api/v1/members", (req, res) => {
-  res.send(req.body)
+  const name = req.body.name
+  if (name && alreadyExist(name)) {
+    res.json(func.error("Name already taken"))
+  } else if (name) {
+    addMember(name)
+    res.json(func.success(member))
+  } else {
+    res.json(func.error("No name value"))
+  }
 })
+
+function addMember(name) {
+  let member = {
+    id: members.length + 1,
+    name: req.body.name,
+  }
+  members.push(member)
+}
+
+function alreadyExist(name) {
+  for (let i = 0; i < members.length && !sameName; i++) {
+    if (members[i].name === name) {
+      return true
+    }
+  }
+  return false
+}
 
 app.listen(8080, () => console.log("Started on port 8080"))
