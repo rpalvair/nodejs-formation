@@ -24,7 +24,12 @@ const members = [
 ]
 
 app.get("/api/v1/members/:id", (req, res) => {
-  res.send(success(members[req.params.id - 1]))
+  let index = getIndex(req.params.id)
+  if (index >= 0) {
+    res.send(success(members[index]))
+  } else {
+    res.json(error(index))
+  }
 })
 
 app.get("/api/v1/members", (req, res) => {
@@ -42,7 +47,7 @@ app.post("/api/v1/members", (req, res) => {
   if (name && alreadyExist(name)) {
     res.json(error("Name already taken"))
   } else if (name) {
-    addMember(name)
+    let member = addMember(name)
     res.json(success(member))
   } else {
     res.json(error("No name value"))
@@ -52,18 +57,24 @@ app.post("/api/v1/members", (req, res) => {
 function addMember(name) {
   let member = {
     id: members.length + 1,
-    name: req.body.name,
+    name: name,
   }
   members.push(member)
+  return member
 }
 
 function alreadyExist(name) {
-  for (let i = 0; i < members.length && !sameName; i++) {
-    if (members[i].name === name) {
-      return true
-    }
+  for (let i = 0; i < members.length; i++) {
+    if (members[i].name === name) return true
   }
   return false
+}
+
+function getIndex(id) {
+  for (let i = 0; i < members.length; i++) {
+    if (members[i].id == id) return i
+  }
+  return "Wrong id"
 }
 
 app.listen(8080, () => console.log("Started on port 8080"))
