@@ -4,4 +4,4 @@ getMember = (callback) => {
   }, 3000)
 }
 
-exports.getMemberCallBack = getMember
+exports.getMemberWithCallBack = getMember

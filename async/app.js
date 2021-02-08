@@ -1,10 +1,11 @@
 require("babel-register")
 
-const { getMemberCallBack } = require("./callback")
+const { getMemberWithCallBack } = require("./callback")
 
 console.log("Debut")
 
-let member = getMemberCallBack((member) => {
-  console.log("member", member)
+getMemberWithCallBack((member) => {
+  console.log(member)
 })
+
 console.log("Fin")
