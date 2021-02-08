@@ -26,9 +26,9 @@ app.get("/api/v1/members/:id", (req, res) => {
 
 app.get("/api/v1/members", (req, res) => {
   if (req.query.max != undefined && req.query.max > 0) {
-    res.send(members.slice(0, req.query.max));
+    res.json(members.slice(0, req.query.max));
   } else {
-    res.send(members);
+    res.json(members);
   }
 });
 
