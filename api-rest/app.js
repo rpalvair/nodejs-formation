@@ -25,7 +25,10 @@ const members = [
 
 const basePath = "/api/v1/members"
 
-app.get(basePath + "/:id", (req, res) => {
+let router = express.Router()
+
+router.route("/:id")
+.get((req, res) => {
   let index = getIndex(req.params.id)
   if (index >= 0) {
     res.send(success(members[index]))
@@ -33,30 +36,7 @@ app.get(basePath + "/:id", (req, res) => {
     res.json(error(index))
   }
 })
-
-app.get(basePath, (req, res) => {
-  if (req.query.max != undefined && req.query.max > 0) {
-    res.json(success(members.slice(0, req.query.max)))
-  } else if (req.query.max != undefined) {
-    res.json(error("Wrong max value!"))
-  } else {
-    res.json(success(members))
-  }
-})
-
-app.post(basePath, (req, res) => {
-  const name = req.body.name
-  if (name && nameAlreadyUsed(name)) {
-    res.json(error("Name already taken"))
-  } else if (name) {
-    let member = addMember(name)
-    res.json(success(member))
-  } else {
-    res.json(error("No name value"))
-  }
-})
-
-app.put(basePath + "/:id", (req, res) => {
+.put((req, res) => {
   let index = getIndex(req.params.id)
   if (index >= 0) {
     if (!existMemberWithSameName(req.body.name, req.params.id)) {
@@ -69,8 +49,7 @@ app.put(basePath + "/:id", (req, res) => {
     res.json(error(index))
   }
 })
-
-app.delete(basePath + "/:id", (req, res) => {
+.delete((req, res) => {
   let index = getIndex(req.params.id)
   if (index >= 0) {
     members.splice(index, 1)
@@ -79,6 +58,29 @@ app.delete(basePath + "/:id", (req, res) => {
     res.json(error(index))
   }
 })
+
+router.route("/")
+.post((req, res) => {
+  const name = req.body.name
+  if (name && nameAlreadyUsed(name)) {
+    res.json(error("Name already taken"))
+  } else if (name) {
+    let member = addMember(name)
+    res.json(success(member))
+  } else {
+    res.json(error("No name value"))
+  }
+})
+.get((req, res) => {
+  if (req.query.max != undefined && req.query.max > 0) {
+    res.json(success(members.slice(0, req.query.max)))
+  } else if (req.query.max != undefined) {
+    res.json(error("Wrong max value!"))
+  } else {
+    res.json(success(members))
+  }
+})
+
 
 function addMember(name) {
   let member = {
@@ -115,5 +117,7 @@ function existMemberWithSameName(name, id) {
 function createID() {
   return members[members.length -1].id + 1
 }
+
+app.use(basePath, router)
 
 app.listen(8080, () => console.log("Started on port 8080"))
