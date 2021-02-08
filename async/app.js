@@ -8,6 +8,10 @@ Promise.all([getMemberWithPromise(), getArticlesWithPromise()]).then((value) =>
   console.log(value)
 )
 
+Promise.race([getMemberWithPromise(), getArticlesWithPromise()]).then((value) =>
+  console.log(value)
+)
+
 // getMemberWithPromise()
 //   .then((value) => {
 //     console.log(value)
