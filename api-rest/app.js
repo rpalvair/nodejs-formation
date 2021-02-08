@@ -24,4 +24,9 @@ app.get("/api/v1/members/:id", (req, res) => {
   res.send(members[req.params.id - 1])
 })
 
+app.get("/api/v1/members", (req, res) => {
+  res.send(members)
+})
+
+
 app.listen(8080, () => console.log("Started on port 8080"));
