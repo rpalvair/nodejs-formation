@@ -1,5 +1,5 @@
 require("babel-register")
-const func = require("./functions")
+const { success, error } = require("./functions")
 const express = require("express")
 const morgan = require("morgan")
 const app = express()
@@ -24,28 +24,28 @@ const members = [
 ]
 
 app.get("/api/v1/members/:id", (req, res) => {
-  res.send(func.success(members[req.params.id - 1]))
+  res.send(success(members[req.params.id - 1]))
 })
 
 app.get("/api/v1/members", (req, res) => {
   if (req.query.max != undefined && req.query.max > 0) {
-    res.json(func.success(members.slice(0, req.query.max)))
+    res.json(success(members.slice(0, req.query.max)))
   } else if (req.query.max != undefined) {
-    res.json(func.error("Wrong max value!"))
+    res.json(error("Wrong max value!"))
   } else {
-    res.json(func.success(members))
+    res.json(success(members))
   }
 })
 
 app.post("/api/v1/members", (req, res) => {
   const name = req.body.name
   if (name && alreadyExist(name)) {
-    res.json(func.error("Name already taken"))
+    res.json(error("Name already taken"))
   } else if (name) {
     addMember(name)
-    res.json(func.success(member))
+    res.json(success(member))
   } else {
-    res.json(func.error("No name value"))
+    res.json(error("No name value"))
   }
 })
 
