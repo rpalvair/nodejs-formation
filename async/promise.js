@@ -28,7 +28,7 @@ getArticles = () => {
     setTimeout(() => {
       resolve([1, 2, 3])
       //   reject(new Error("arf"))
-    }, 1500)
+    }, 1000)
   })
 }
 
