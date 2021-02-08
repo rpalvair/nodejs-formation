@@ -70,6 +70,16 @@ app.put(basePath + "/:id", (req, res) => {
   }
 })
 
+app.delete(basePath + "/:id", (req, res) => {
+  let index = getIndex(req.params.id)
+  if (index >= 0) {
+    members.splice(index, 1)
+    res.json(success(members))
+  } else {
+    res.json(error(index))
+  }
+})
+
 function addMember(name) {
   let member = {
     id: members.length + 1,
