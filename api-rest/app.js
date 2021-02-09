@@ -4,7 +4,7 @@ const express = require("express")
 const morgan = require("morgan")
 const app = express()
 const config = require("./config.json")
-const { waitConnection, findMembers, getById } = require("./member-service")
+const { waitConnection, findMembers, getMemberById } = require("./member-repository")
 
 waitConnection()
   .then((value) => {
