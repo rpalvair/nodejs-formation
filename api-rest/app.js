@@ -9,6 +9,7 @@ const {
   getMemberById,
   getMemberByName,
   insertMember,
+  updateMember,
 } = require("./member-repository")
 
 app.use(morgan("dev"))
@@ -54,16 +55,13 @@ router
     }
   })
   .put((req, res) => {
-    let index = getIndex(req.params.id)
-    if (index >= 0) {
-      if (!existMemberWithSameName(req.body.name, req.params.id)) {
-        members[index].name = req.body.name
-        res.json(success(members[index]))
-      } else {
-        res.json(error("Same name"))
-      }
-    } else {
-      res.json(error(index))
+    if (req.body.name) {
+      let id = req.params.id
+      update(req.body.name, id)
+        .then((value) => {
+          res.json(success(value))
+        })
+        .catch((err) => res.json(error(err.message)))
     }
   })
   .delete((req, res) => {
@@ -119,20 +117,27 @@ async function isNameAlreadyUsed(name) {
   return members.length > 0
 }
 
+async function update(name, id) {
+  let existingMember = await getMemberByName(name)
+  if (existingMember.length > 1) {
+    throw new Error("Name already taken")
+  } else if (existingMember.length == 1 && existingMember[0].id != id) {
+    throw new Error("Name already taken")
+  }
+  let member = await getMemberById(id)
+  if (member.length == 1) {
+    await updateMember(name, id)
+    return await getMemberById(id)
+  } else {
+    throw new Error("No member with this id")
+  }
+}
+
 function getIndex(id) {
   for (let i = 0; i < members.length; i++) {
     if (members[i].id == id) return i
   }
   return "Wrong id"
-}
-function existMemberWithSameName(name, id) {
-  let same = false
-  for (let i = 0; i < members.length && !same; i++) {
-    if (members[i].name == name && members[i].id != id) {
-      same = true
-    }
-  }
-  return same
 }
 
 function findMembers(res, limit) {
