@@ -33,6 +33,20 @@ insertMember = (name) => {
   })
 }
 
+updateMember = (name, id) => {
+  return new Promise((resolve, reject) => {
+    connection.query(
+      "UPDATE members SET name = ? WHERE id = ?",
+      [name, id],
+      (error, results, fields) => {
+        if (error) reject(new Error(error.sqlMessage))
+        console.log(results)
+        resolve(results)
+      }
+    )
+  })
+}
+
 function executeFindMembers(limit) {
   const query = findMembersQuery(limit)
   console.log("query = ", query)
@@ -81,5 +95,4 @@ exports.findAllMembers = findAllMembers
 exports.getMemberById = getMemberById
 exports.getMemberByName = getMemberByName
 exports.insertMember = insertMember
-
-
+exports.updateMember = updateMember
