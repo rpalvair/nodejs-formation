@@ -4,7 +4,11 @@ const express = require("express")
 const morgan = require("morgan")
 const app = express()
 const config = require("./config.json")
-const { waitConnection, findMembers, getMemberById } = require("./member-repository")
+const {
+  waitConnection,
+  findMembers,
+  getMemberById,
+} = require("./member-repository")
 
 waitConnection()
   .then((value) => {
@@ -37,7 +41,11 @@ waitConnection()
         if (req.params.id > 0) {
           getMemberById(req.params.id)
             .then((value) => {
-              res.send(success(value))
+              if (value.length > 0) {
+                res.send(success(value))
+              } else {
+                res.send(error("Wrong id"))
+              }
             })
             .catch((error) => {
               res.json(error(error))
