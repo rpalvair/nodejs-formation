@@ -4,7 +4,7 @@ const express = require("express")
 const morgan = require("morgan")
 const app = express()
 const config = require("./config.json")
-const { waitConnection } = require("./member-service")
+const { waitConnection, findMembers } = require("./member-service")
 
 waitConnection()
   .then((value) => {
@@ -79,11 +79,25 @@ waitConnection()
       })
       .get((req, res) => {
         if (req.query.max != undefined && req.query.max > 0) {
-          res.json(success(members.slice(0, req.query.max)))
+          findMembers(req.query.max)
+            .then((value) => {
+              console.log("members", value)
+              res.json(success(value))
+            })
+            .catch((error) => {
+              res.json(error(error))
+            })
         } else if (req.query.max != undefined) {
           res.json(error("Wrong max value!"))
         } else {
-          res.json(success(members))
+          findMembers()
+            .then((value) => {
+              console.log("members", value)
+              res.json(success(value))
+            })
+            .catch((error) => {
+              res.json(error(error))
+            })
         }
       })
 
