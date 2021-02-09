@@ -51,10 +51,12 @@ router
     }
   })
   .delete((req, res) => {
-    if (req.params.id) {
+    if (req.params.id > 0) {
       deleteMember(req.params.id)
         .then((value) => res.json(success(value)))
-        .catch((err) => res.json(error(err)))
+        .catch((err) => res.json(error(err.message)))
+    } else {
+      res.json(error("Wrong id"))
     }
   })
 
