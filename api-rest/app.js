@@ -41,7 +41,7 @@ router
       getMemberById(req.params.id)
         .then((value) => {
           if (value.length > 0) {
-            res.send(success(value))
+            res.send(success(value[0]))
           } else {
             res.send(error("Wrong id"))
           }
