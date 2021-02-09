@@ -29,6 +29,16 @@ getMemberById = (id) => {
   }
 }
 
+getMemberByName = (name) => {
+  if (isConnected) {
+    return executeGetByName(name)
+  } else {
+    this.waitConnection().then(() => {
+      return executeGetByName(name)
+    })
+  }
+}
+
 waitConnection = () => {
   return new Promise((resolve, reject) => {
     connection.connect((err) => {
@@ -75,6 +85,20 @@ function executeGetById(id) {
     })
   })
 }
+
+function executeGetByName(name) {
+  const query = "SELECT * FROM members WHERE name = ?"
+  console.log("query = ", query)
+  return new Promise((resolve, reject) => {
+    connection.query(query, [name], (error, results, fields) => {
+      if (error) reject(error)
+      console.log(results)
+      resolve(results)
+    })
+  })
+}
+
 exports.findAllMembers = findAllMembers
 exports.waitConnection = waitConnection
 exports.getMemberById = getMemberById
+exports.getMemberByName = getMemberByName

@@ -8,6 +8,7 @@ const {
   waitConnection,
   findAllMembers,
   getMemberById,
+  getMemberByName,
 } = require("./member-repository")
 
 waitConnection()
@@ -81,13 +82,17 @@ waitConnection()
       .route("/")
       .post((req, res) => {
         const name = req.body.name
-        if (name && nameAlreadyUsed(name)) {
-          res.json(error("Name already taken"))
-        } else if (name) {
-          let member = addMember(name)
-          res.json(success(member))
-        } else {
-          res.json(error("No name value"))
+        try {
+          if (name && nameAlreadyUsed(name)) {
+            res.json(error("Name already taken"))
+          } else if (name) {
+            let member = addMember(name)
+            res.json(success(member))
+          } else {
+            res.json(error("No name value"))
+          }
+        } catch (e) {
+          res.json(error(e))
         }
       })
       .get((req, res) => {
@@ -109,11 +114,8 @@ waitConnection()
       return member
     }
 
-    function nameAlreadyUsed(name) {
-      for (let i = 0; i < members.length; i++) {
-        if (members[i].name === name) return true
-      }
-      return false
+    async function nameAlreadyUsed(name) {
+      return (await getMemberByName(name).length) > 0
     }
 
     function getIndex(id) {
