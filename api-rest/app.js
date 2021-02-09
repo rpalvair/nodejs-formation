@@ -8,6 +8,7 @@ const {
   findAllMembers,
   getMemberById,
   getMemberByName,
+  insertMember,
 } = require("./member-repository")
 
 app.use(morgan("dev"))
@@ -80,11 +81,8 @@ router
   .post((req, res) => {
     const name = req.body.name
     try {
-      if (name && nameAlreadyUsed(name)) {
-        res.json(error("Name already taken"))
-      } else if (name) {
-        let member = addMember(name)
-        res.json(success(member))
+      if (name) {
+        insertNewMember(res, name)
       } else {
         res.json(error("No name value"))
       }
@@ -102,17 +100,25 @@ router
     }
   })
 
-function addMember(name) {
-  let member = {
-    id: createID(),
-    name: name,
+async function insertNewMember(res, name) {
+  let nameAlreadyUsed = await isNameAlreadyUsed(name)
+  if (nameAlreadyUsed) {
+    res.json(error("Name already taken"))
+  } else {
+    console.log("Add member")
+    await insert(res, name)
   }
-  members.push(member)
-  return member
 }
 
-async function nameAlreadyUsed(name) {
-  return (await getMemberByName(name).length) > 0
+async function insert(res, name) {
+  await insertMember(name)
+  let member = await getMemberByName(name)
+  res.json(success(member))
+}
+
+async function isNameAlreadyUsed(name) {
+  let members = await getMemberByName(name)
+  return members.length > 0
 }
 
 function getIndex(id) {
@@ -129,10 +135,6 @@ function existMemberWithSameName(name, id) {
     }
   }
   return same
-}
-
-function createID() {
-  return members[members.length - 1].id + 1
 }
 
 function findMembers(res, limit) {
