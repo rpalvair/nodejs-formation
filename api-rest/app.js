@@ -80,14 +80,17 @@ router
   .route("/")
   .post((req, res) => {
     const name = req.body.name
-    try {
-      if (name) {
-        insertNewMember(res, name)
-      } else {
-        res.json(error("No name value"))
-      }
-    } catch (err) {
-      res.json(error(err.message))
+    if (name) {
+      ;(async () => {
+        try {
+          let member = await insertNewMember(name)
+          res.json(success(member))
+        } catch (err) {
+          res.json(error(err.message))
+        }
+      })()
+    } else {
+      res.json(error("No name value"))
     }
   })
   .get((req, res) => {
@@ -100,20 +103,15 @@ router
     }
   })
 
-async function insertNewMember(res, name) {
+async function insertNewMember(name) {
   let nameAlreadyUsed = await isNameAlreadyUsed(name)
   if (nameAlreadyUsed) {
-    res.json(error("Name already taken"))
+    throw new Error("Name already taken")
   } else {
     console.log("Add member")
-    await insert(res, name)
+    await insertMember(name)
+    return await getMemberByName(name)
   }
-}
-
-async function insert(res, name) {
-  await insertMember(name)
-  let member = await getMemberByName(name)
-  res.json(success(member))
 }
 
 async function isNameAlreadyUsed(name) {
