@@ -119,9 +119,10 @@ async function isNameAlreadyUsed(name) {
 
 async function update(name, id) {
   let existingMember = await getMemberByName(name)
-  if (existingMember.length > 1) {
-    throw new Error("Name already taken")
-  } else if (existingMember.length == 1 && existingMember[0].id != id) {
+  if (
+    existingMember.length > 1 ||
+    (existingMember.length == 1 && existingMember[0].id != id)
+  ) {
     throw new Error("Name already taken")
   }
   let member = await getMemberById(id)
