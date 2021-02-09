@@ -10,26 +10,12 @@ const {
   getMemberByName,
   insertMember,
   updateMember,
+  deleteOne,
 } = require("./member-repository")
 
 app.use(morgan("dev"))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
-
-const members = [
-  {
-    id: 1,
-    name: "John",
-  },
-  {
-    id: 2,
-    name: "Julie",
-  },
-  {
-    id: 3,
-    name: "Jack",
-  },
-]
 
 const basePath = config.rootAPI + "members"
 
@@ -65,12 +51,10 @@ router
     }
   })
   .delete((req, res) => {
-    let index = getIndex(req.params.id)
-    if (index >= 0) {
-      members.splice(index, 1)
-      res.json(success(members))
-    } else {
-      res.json(error(index))
+    if (req.params.id) {
+      deleteMember(req.params.id)
+        .then((value) => res.json(success(value)))
+        .catch((err) => res.json(error(err)))
     }
   })
 
@@ -134,11 +118,14 @@ async function update(name, id) {
   }
 }
 
-function getIndex(id) {
-  for (let i = 0; i < members.length; i++) {
-    if (members[i].id == id) return i
+async function deleteMember(id) {
+  let member = await getMemberById(id)
+  if (member.length == 1) {
+    await deleteOne(id)
+    return await findAllMembers()
+  } else {
+    throw new Error("No member with this id")
   }
-  return "Wrong id"
 }
 
 function findMembers(res, limit) {

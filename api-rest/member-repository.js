@@ -47,6 +47,20 @@ updateMember = (name, id) => {
   })
 }
 
+deleteOne = (id) => {
+  return new Promise((resolve, reject) => {
+    connection.query(
+      "DELETE FROM members WHERE id = ?",
+      [id],
+      (error, results, fields) => {
+        if (error) reject(new Error(error.sqlMessage))
+        console.log(results)
+        resolve(results)
+      }
+    )
+  })
+}
+
 function executeFindMembers(limit) {
   const query = findMembersQuery(limit)
   console.log("query = ", query)
@@ -96,3 +110,4 @@ exports.getMemberById = getMemberById
 exports.getMemberByName = getMemberByName
 exports.insertMember = insertMember
 exports.updateMember = updateMember
+exports.deleteOne = deleteOne
