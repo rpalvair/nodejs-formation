@@ -1,11 +1,7 @@
 const mysql = require("mysql")
+const config = require("./config.json")
 
-const connection = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "nodejs",
-})
+const connection = mysql.createConnection(config.db)
 
 findAllMembers = (limit) => {
   return executeFindMembers(limit)
