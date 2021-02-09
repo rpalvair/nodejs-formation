@@ -7,51 +7,16 @@ const connection = mysql.createConnection({
   database: "nodejs",
 })
 
-let isConnected = false
-
 findAllMembers = (limit) => {
-  if (isConnected) {
-    return executeFindMembers(limit)
-  } else {
-    this.waitConnection().then(() => {
-      return executeFindMembers(limit)
-    })
-  }
+  return executeFindMembers(limit)
 }
 
 getMemberById = (id) => {
-  if (isConnected) {
-    return executeGetById(id)
-  } else {
-    this.waitConnection().then(() => {
-      return executeGetById(id)
-    })
-  }
+  return executeGetById(id)
 }
 
 getMemberByName = (name) => {
-  if (isConnected) {
-    return executeGetByName(name)
-  } else {
-    this.waitConnection().then(() => {
-      return executeGetByName(name)
-    })
-  }
-}
-
-waitConnection = () => {
-  return new Promise((resolve, reject) => {
-    connection.connect((err) => {
-      if (err) {
-        console.error("error connecting: " + err.stack)
-        reject(new Error(err.sqlMessage))
-      } else {
-        console.log("connected as id " + connection.threadId)
-        isConnected = true
-        resolve(true)
-      }
-    })
-  })
+  return executeGetByName(name)
 }
 
 function executeFindMembers(limit) {
@@ -59,7 +24,7 @@ function executeFindMembers(limit) {
   console.log("query = ", query)
   return new Promise((resolve, reject) => {
     connection.query(query, (error, results, fields) => {
-      if (error) reject(error)
+      if (error) reject(new Error(error.sqlMessage))
       console.log(results)
       resolve(results)
     })
@@ -79,7 +44,7 @@ function executeGetById(id) {
   console.log("query = ", query)
   return new Promise((resolve, reject) => {
     connection.query(query, [id], (error, results, fields) => {
-      if (error) reject(error)
+      if (error) reject(new Error(error.sqlMessage))
       console.log(results)
       resolve(results)
     })
@@ -91,7 +56,7 @@ function executeGetByName(name) {
   console.log("query = ", query)
   return new Promise((resolve, reject) => {
     connection.query(query, [name], (error, results, fields) => {
-      if (error) reject(error)
+      if (error) reject(new Error(error.sqlMessage))
       console.log(results)
       resolve(results)
     })
@@ -99,6 +64,5 @@ function executeGetByName(name) {
 }
 
 exports.findAllMembers = findAllMembers
-exports.waitConnection = waitConnection
 exports.getMemberById = getMemberById
 exports.getMemberByName = getMemberByName
