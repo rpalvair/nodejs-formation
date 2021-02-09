@@ -19,6 +19,20 @@ getMemberByName = (name) => {
   return executeGetByName(name)
 }
 
+insertMember = (name) => {
+  return new Promise((resolve, reject) => {
+    connection.query(
+      "INSERT INTO members(name) VALUES(?)",
+      [name],
+      (error, results, fields) => {
+        if (error) reject(new Error(error.sqlMessage))
+        console.log(results)
+        resolve(results)
+      }
+    )
+  })
+}
+
 function executeFindMembers(limit) {
   const query = findMembersQuery(limit)
   console.log("query = ", query)
@@ -66,3 +80,6 @@ function executeGetByName(name) {
 exports.findAllMembers = findAllMembers
 exports.getMemberById = getMemberById
 exports.getMemberByName = getMemberByName
+exports.insertMember = insertMember
+
+

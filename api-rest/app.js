@@ -8,6 +8,7 @@ const {
   findAllMembers,
   getMemberById,
   getMemberByName,
+  insertMember,
 } = require("./member-repository")
 
 app.use(morgan("dev"))
@@ -40,7 +41,7 @@ router
       getMemberById(req.params.id)
         .then((value) => {
           if (value.length > 0) {
-            res.send(success(value))
+            res.send(success(value[0]))
           } else {
             res.send(error("Wrong id"))
           }
@@ -79,17 +80,17 @@ router
   .route("/")
   .post((req, res) => {
     const name = req.body.name
-    try {
-      if (name && nameAlreadyUsed(name)) {
-        res.json(error("Name already taken"))
-      } else if (name) {
-        let member = addMember(name)
-        res.json(success(member))
-      } else {
-        res.json(error("No name value"))
-      }
-    } catch (err) {
-      res.json(error(err.message))
+    if (name) {
+      ;(async () => {
+        try {
+          let member = await insertNewMember(name)
+          res.json(success(member))
+        } catch (err) {
+          res.json(error(err.message))
+        }
+      })()
+    } else {
+      res.json(error("No name value"))
     }
   })
   .get((req, res) => {
@@ -102,17 +103,20 @@ router
     }
   })
 
-function addMember(name) {
-  let member = {
-    id: createID(),
-    name: name,
+async function insertNewMember(name) {
+  let nameAlreadyUsed = await isNameAlreadyUsed(name)
+  if (nameAlreadyUsed) {
+    throw new Error("Name already taken")
+  } else {
+    console.log("Add member")
+    await insertMember(name)
+    return await getMemberByName(name)
   }
-  members.push(member)
-  return member
 }
 
-async function nameAlreadyUsed(name) {
-  return (await getMemberByName(name).length) > 0
+async function isNameAlreadyUsed(name) {
+  let members = await getMemberByName(name)
+  return members.length > 0
 }
 
 function getIndex(id) {
@@ -129,10 +133,6 @@ function existMemberWithSameName(name, id) {
     }
   }
   return same
-}
-
-function createID() {
-  return members[members.length - 1].id + 1
 }
 
 function findMembers(res, limit) {
