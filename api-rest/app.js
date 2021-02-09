@@ -6,7 +6,7 @@ const app = express()
 const config = require("./config.json")
 const {
   waitConnection,
-  findMembers,
+  findAllMembers,
   getMemberById,
 } = require("./member-repository")
 
@@ -92,25 +92,11 @@ waitConnection()
       })
       .get((req, res) => {
         if (req.query.max != undefined && req.query.max > 0) {
-          findMembers(req.query.max)
-            .then((value) => {
-              console.log("members", value)
-              res.json(success(value))
-            })
-            .catch((error) => {
-              res.json(error(error))
-            })
+          findMembers(res, req.query.max)
         } else if (req.query.max != undefined) {
           res.json(error("Wrong max value!"))
         } else {
-          findMembers()
-            .then((value) => {
-              console.log("members", value)
-              res.json(success(value))
-            })
-            .catch((error) => {
-              res.json(error(error))
-            })
+          findMembers(res)
         }
       })
 
@@ -148,6 +134,23 @@ waitConnection()
 
     function createID() {
       return members[members.length - 1].id + 1
+    }
+
+    function findMembers(res, limit) {
+      let methodToCall
+      if (limit) {
+        methodToCall = findAllMembers(limit)
+      } else {
+        methodToCall = findAllMembers()
+      }
+      methodToCall
+        .then((value) => {
+          console.log("members", value)
+          res.json(success(value))
+        })
+        .catch((error) => {
+          res.json(error(error))
+        })
     }
 
     app.use(basePath, router)

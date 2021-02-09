@@ -9,7 +9,7 @@ const connection = mysql.createConnection({
 
 let isConnected = false
 
-findMembers = (limit) => {
+findAllMembers = (limit) => {
   if (isConnected) {
     return executeFindMembers(limit)
   } else {
@@ -75,6 +75,6 @@ function executeGetById(id) {
     })
   })
 }
-exports.findMembers = findMembers
+exports.findAllMembers = findAllMembers
 exports.waitConnection = waitConnection
 exports.getMemberById = getMemberById
