@@ -30,14 +30,14 @@ router
           if (value.length > 0) {
             res.send(success(value[0]))
           } else {
-            res.send(error("Wrong id"))
+            res.send(error(config.errors.wrongID))
           }
         })
         .catch((err) => {
           res.json(error(err.message))
         })
     } else {
-      res.json(error("Wrong id"))
+      res.json(error(config.errors.wrongID))
     }
   })
   .put((req, res) => {
@@ -56,7 +56,7 @@ router
         .then((value) => res.json(success(value)))
         .catch((err) => res.json(error(err.message)))
     } else {
-      res.json(error("Wrong id"))
+      res.json(error(config.errors.wrongID))
     }
   })
 
@@ -74,14 +74,14 @@ router
         }
       })()
     } else {
-      res.json(error("No name value"))
+      res.json(error(config.errors.noNameValue))
     }
   })
   .get((req, res) => {
     if (req.query.max != undefined && req.query.max > 0) {
       findMembers(res, req.query.max)
     } else if (req.query.max != undefined) {
-      res.json(error("Wrong max value!"))
+      res.json(error(config.errors.wrongMaxValue))
     } else {
       findMembers(res)
     }
@@ -90,7 +90,7 @@ router
 async function insertNewMember(name) {
   let nameAlreadyUsed = await isNameAlreadyUsed(name)
   if (nameAlreadyUsed) {
-    throw new Error("Name already taken")
+    throw new Error(config.errors.nameAlreadyTaken)
   } else {
     console.log("Add member")
     await insertMember(name)
@@ -109,14 +109,14 @@ async function update(name, id) {
     existingMember.length > 1 ||
     (existingMember.length == 1 && existingMember[0].id != id)
   ) {
-    throw new Error("Name already taken")
+    throw new Error(config.errors.nameAlreadyTaken)
   }
   let member = await getMemberById(id)
   if (member.length == 1) {
     await updateMember(name, id)
     return await getMemberById(id)
   } else {
-    throw new Error("No member with this id")
+    throw new Error(config.errors.noMemberID)
   }
 }
 
@@ -126,7 +126,7 @@ async function deleteMember(id) {
     await deleteOne(id)
     return await findAllMembers()
   } else {
-    throw new Error("No member with this id")
+    throw new Error(config.errors.noMemberID)
   }
 }
 

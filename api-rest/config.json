@@ -6,5 +6,13 @@
         "user":"root",
         "password":"",
         "database": "nodejs"
+    },
+    "errors": {
+        "wrongID" :"Wrong id",
+        "wrongMaxValue": "Wrong max value",
+        "nameAlreadyTaken": "Name already taken",
+        "noNameValue" : "No name value",
+        "sameName": "Same Name",
+        "noMemberID" : "No member with this ID"
     }
 }
