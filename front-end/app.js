@@ -18,18 +18,25 @@ router.route("/").get((req, res) => {
 })
 
 router.route("/members").get((req, res) => {
-  axios.get("http://localhost:8080/api/v1/member")
-  .then((response) => {
-    
-  }).catch((err) => {
-    renderError(res, err.message)
-  })
+  axios
+    .get("http://localhost:8080/api/v1/members")
+    .then((response) => {
+      if (response.data.status == "success") {
+        res.render("members.twig", {
+          members: response.data.result,
+        })
+      } else {
+        renderError(res, response.data.message)
+      }
+    })
+    .catch((err) => {
+      renderError(res, err.message)
+    })
 })
 
 app.use(config.basePath, router)
 
 app.listen(config.port, () => console.log(`Started on port ${config.port}`))
-
 
 function renderError(res, message) {
   res.render("error.twig", {
