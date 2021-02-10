@@ -58,7 +58,7 @@
           "tags": ["members"]
         }
       },
-      "/api/v1/members": {
+      "/members": {
         "post": {
           "summary": "/members",
           "consumes": [
