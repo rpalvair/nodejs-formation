@@ -2,7 +2,7 @@ require("babel-register")
 const { success, error } = require("./functions")
 const express = require("express")
 const morgan = require("morgan")
-const app = express()
+const expressOasGenerator = require("express-oas-generator")
 const config = require("./config.json")
 const {
   findAllMembers,
@@ -12,10 +12,19 @@ const {
   updateMember,
   deleteOne,
 } = require("./member-repository")
+const swaggerUi = require("swagger-ui-express")
+const swaggerDocument = require("./swagger.json")
 
+const app = express()
+expressOasGenerator.init(app, {})
 app.use(morgan("dev"))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+app.use(
+  config.rootAPI + "api-docs",
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerDocument)
+)
 
 const basePath = config.rootAPI + "members"
 

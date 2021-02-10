@@ -1,0 +1,106 @@
+{
+    "definitions": {},
+    "info": {
+      "title": "api-rest",
+      "version": "1.0.0",
+      "license": {
+        "name": "ISC"
+      },
+      "description": "Specification JSONs: [v2](/api-spec/v2), [v3](/api-spec/v3)."
+    },
+    "basePath": "/api/v1",
+    "host": "localhost:8080",
+    "paths": {
+      "/members/{id}": {
+        "get": {
+          "summary": "/members/{id}",
+          "consumes": [
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true
+            }
+          ],
+          "responses": {},
+          "tags": ["members"]
+        },
+        "put": {
+          "summary": "/members/{id}",
+          "consumes": [
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true
+            }
+          ],
+          "responses": {},
+          "tags": ["members"]
+        },
+        "delete": {
+          "summary": "/members/{id}",
+          "consumes": [
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                  "type": "string"
+              }
+            }
+          ],
+          "responses": {},
+          "tags": ["members"]
+        }
+      },
+      "/members": {
+        "post": {
+          "summary": "/members",
+          "consumes": [
+            "application/json"
+          ],
+          "parameters": [
+            {
+                "name": "name",
+                "in": "body",
+                "required": true,
+                "schema": {
+                    "type": "object",
+                    "properties": {
+                        "name" : {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+          ],
+          "responses": {},
+          "tags": ["members"]
+        },
+        "get": {
+          "summary": "/members",
+          "consumes": [
+            "application/json"
+          ],
+          "parameters": [],
+          "responses": {},
+          "tags": ["members"]
+        }
+      }
+    },
+    "swagger": "2.0",
+    "tags": [
+        {
+          "name": "members",
+          "description" : "Members management"
+        }
+    ]
+  }
