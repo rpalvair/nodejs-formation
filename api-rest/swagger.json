@@ -8,10 +8,12 @@
       },
       "description": "Specification JSONs: [v2](/api-spec/v2), [v3](/api-spec/v3)."
     },
+    "basePath": "/api/v1",
+    "host": "localhost:8080",
     "paths": {
-      "/api/v1/members/{id}": {
+      "members/{id}": {
         "get": {
-          "summary": "/api/v1/members/{id}",
+          "summary": "/members/{id}",
           "consumes": [
             "application/json"
           ],
@@ -26,7 +28,7 @@
           "tags": []
         },
         "put": {
-          "summary": "/api/v1/members/{id}",
+          "summary": "/members/{id}",
           "consumes": [
             "application/json"
           ],
@@ -41,7 +43,7 @@
           "tags": []
         },
         "delete": {
-          "summary": "/api/v1/members/{id}",
+          "summary": "/members/{id}",
           "consumes": [
             "application/json"
           ],
@@ -58,7 +60,7 @@
       },
       "/api/v1/members": {
         "post": {
-          "summary": "/api/v1/members",
+          "summary": "/members",
           "consumes": [
             "application/json"
           ],
@@ -67,7 +69,7 @@
           "tags": []
         },
         "get": {
-          "summary": "/api/v1/members",
+          "summary": "/members",
           "consumes": [
             "application/json"
           ],
