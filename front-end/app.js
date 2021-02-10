@@ -8,10 +8,18 @@ app.use(morgan("dev"))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
-app.get("/", (req, res) => {
+let router = express.Router()
+
+router.route("/").get((req, res) => {
   res.render("index.twig", {
     message: "I'm a FullStack Developer",
   })
 })
+
+router.route("/members").get((req, res) => {
+  res.send("WIP")
+})
+
+app.use(config.basePath, router)
 
 app.listen(config.port, () => console.log(`Started on port ${config.port}`))
