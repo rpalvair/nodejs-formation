@@ -25,7 +25,7 @@
             }
           ],
           "responses": {},
-          "tags": []
+          "tags": ["members"]
         },
         "put": {
           "summary": "/members/{id}",
@@ -40,7 +40,7 @@
             }
           ],
           "responses": {},
-          "tags": []
+          "tags": ["members"]
         },
         "delete": {
           "summary": "/members/{id}",
@@ -55,7 +55,7 @@
             }
           ],
           "responses": {},
-          "tags": []
+          "tags": ["members"]
         }
       },
       "/api/v1/members": {
@@ -66,7 +66,7 @@
           ],
           "parameters": [],
           "responses": {},
-          "tags": []
+          "tags": ["members"]
         },
         "get": {
           "summary": "/members",
@@ -75,10 +75,15 @@
           ],
           "parameters": [],
           "responses": {},
-          "tags": []
+          "tags": ["members"]
         }
       }
     },
     "swagger": "2.0",
-    "tags": []
+    "tags": [
+        {
+          "name": "members",
+          "description" : "Members management"
+        }
+    ]
   }
