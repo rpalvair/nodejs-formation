@@ -1,0 +1,17 @@
+require("babel-register")
+const express = require("express")
+const config = require("./config.json")
+const morgan = require("morgan")
+
+
+const app = express()
+app.use(morgan("dev"))
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+
+app.get("/",(req,res) => {
+    res.send("Okay")
+})
+
+
+app.listen(config.port, () => console.log(`Started on port ${config.port}`))
