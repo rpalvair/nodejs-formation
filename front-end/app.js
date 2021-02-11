@@ -21,7 +21,7 @@ router.route("/").get((req, res) => {
 })
 
 router.route("/members").get((req, res) => {
-  apiCall("/members", res, (value) => {
+  apiCall(getMembersUrl(req), res, (value) => {
     res.render("members.twig", {
       members: value,
     })
@@ -59,4 +59,8 @@ function apiCall(url, res, successCallback) {
     .catch((err) => {
       renderError(res, err.message)
     })
+}
+
+function getMembersUrl(req) {
+  return req.query.max ? "/members?max=" + req.query.max : "/members"
 }
