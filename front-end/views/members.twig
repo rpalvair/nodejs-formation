@@ -21,7 +21,7 @@
       </thead>
       <tbody>
       {% for member in members %}
-         <tr>
+         <tr style="cursor: pointer" onclick="document.location='/front/edit/{{member.id}}'">
           <th scope="row">{{member.id}}</th>
           <td>{{member.name}}</td>
         </tr>
