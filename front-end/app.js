@@ -8,6 +8,9 @@ const app = express()
 app.use(morgan("dev"))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+const fetch = axios.create({
+  baseURL: config.members.url,
+})
 
 let router = express.Router()
 
@@ -18,8 +21,8 @@ router.route("/").get((req, res) => {
 })
 
 router.route("/members").get((req, res) => {
-  axios
-    .get("http://localhost:8080/api/v1/members")
+  fetch
+    .get("/members")
     .then((response) => {
       if (response.data.status == "success") {
         res.render("members.twig", {
