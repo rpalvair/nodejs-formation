@@ -1,0 +1,7 @@
+{
+    "port": 8081,
+    "basePath" :"/front",
+    "members": {
+        "url" : "http://localhost:8080/api/v1"
+    }
+}
