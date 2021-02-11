@@ -36,6 +36,14 @@ router.route("/members/:id").get((req, res) => {
   })
 })
 
+router.route("/edit/:id").get((req, res) => {
+  apiCall("/members/" + req.params.id, res, (value) => {
+    res.render("edit.twig", {
+      member: value,
+    })
+  })
+})
+
 app.use(config.basePath, router)
 
 app.listen(config.port, () => console.log(`Started on port ${config.port}`))
