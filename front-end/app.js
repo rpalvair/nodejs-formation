@@ -18,13 +18,28 @@ router.route("/").get((req, res) => {
   res.redirect("/front/members")
 })
 
-router.route("/members").get((req, res) => {
-  apiCall(getMembersUrl(req), "get", {}, res, (value) => {
-    res.render("members.twig", {
-      members: value,
+router
+  .route("/members")
+  .get((req, res) => {
+    apiCall(getMembersUrl(req), "get", {}, res, (value) => {
+      res.render("members.twig", {
+        members: value.sort((a,b) => a.id - b.id),
+      })
     })
   })
-})
+  .post((req, res) => {
+    apiCall(
+      getMembersUrl(req),
+      "post",
+      { name: req.body.name },
+      res,
+      (value) => {
+        res.render("member.twig", {
+          members: value[0],
+        })
+      }
+    )
+  })
 
 router.route("/members/:id").get((req, res) => {
   apiCall("/members/" + req.params.id, "get", {}, res, (value) => {
@@ -55,14 +70,24 @@ router
     )
   })
 
-  router
-  .route("/delete")
+router.route("/delete").post((req, res) => {
+  apiCall("/members/" + req.body.id, "delete", {}, res, (value) => {
+    res.redirect("/front/members")
+  })
+})
+
+router
+  .route("/create")
+  .get((req, res) => {
+    res.render("create.twig", {})
+  })
   .post((req, res) => {
-    apiCall("/members/" + req.body.id, "delete", {}, res, (value) => {
-      res.redirect("/front/members")
+    apiCall("/members", "post", { name: req.body.name }, res, (value) => {
+      res.render("member.twig", {
+        member: value[0],
+      })
     })
   })
-
 
 app.use(config.basePath, router)
 
