@@ -15,9 +15,7 @@ const fetch = axios.create({
 let router = express.Router()
 
 router.route("/").get((req, res) => {
-  res.render("index.twig", {
-    message: "I'm a FullStack Developer",
-  })
+  res.redirect("/front/members")
 })
 
 router.route("/members").get((req, res) => {
@@ -52,9 +50,7 @@ router
       { name: req.body.name },
       res,
       (value) => {
-        res.render("member.twig", {
-          member: value[0],
-        })
+        res.redirect("/front/members")
       }
     )
   })
