@@ -55,6 +55,15 @@ router
     )
   })
 
+  router
+  .route("/delete")
+  .post((req, res) => {
+    apiCall("/members/" + req.body.id, "delete", {}, res, (value) => {
+      res.redirect("/front/members")
+    })
+  })
+
+
 app.use(config.basePath, router)
 
 app.listen(config.port, () => console.log(`Started on port ${config.port}`))
