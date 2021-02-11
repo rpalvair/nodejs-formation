@@ -21,7 +21,7 @@ router.route("/").get((req, res) => {
 })
 
 router.route("/members").get((req, res) => {
-  apiCall(getMembersUrl(req), res, (value) => {
+  apiCall(getMembersUrl(req), "get", {}, res, (value) => {
     res.render("members.twig", {
       members: value,
     })
@@ -29,20 +29,35 @@ router.route("/members").get((req, res) => {
 })
 
 router.route("/members/:id").get((req, res) => {
-  apiCall("/members/" + req.params.id, res, (value) => {
+  apiCall("/members/" + req.params.id, "get", {}, res, (value) => {
     res.render("member.twig", {
       member: value,
     })
   })
 })
 
-router.route("/edit/:id").get((req, res) => {
-  apiCall("/members/" + req.params.id, res, (value) => {
-    res.render("edit.twig", {
-      member: value,
+router
+  .route("/edit/:id")
+  .get((req, res) => {
+    apiCall("/members/" + req.params.id, "get", {}, res, (value) => {
+      res.render("edit.twig", {
+        member: value,
+      })
     })
   })
-})
+  .post((req, res) => {
+    apiCall(
+      "/members/" + req.params.id,
+      "put",
+      { name: req.body.name },
+      res,
+      (value) => {
+        res.render("member.twig", {
+          member: value[0],
+        })
+      }
+    )
+  })
 
 app.use(config.basePath, router)
 
@@ -54,9 +69,12 @@ function renderError(res, message) {
   })
 }
 
-function apiCall(url, res, successCallback) {
-  fetch
-    .get(url)
+function apiCall(url, method, data, res, successCallback) {
+  fetch({
+    method: method,
+    url: url,
+    data: data,
+  })
     .then((response) => {
       if (response.data.status == "success") {
         successCallback(response.data.result)
